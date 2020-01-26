@@ -110,6 +110,8 @@ extern "C" {
 	int break_path(graph_t *g, uint32_t scf_id, uint32_t *bs, uint32_t bn);
 	uint32_t *parse_path(graph_t *g, uint32_t pid, uint32_t *n);
 	int loc_node(graph_t *g, char *vname, uint32_t *pid, uint32_t *vidx); //return node index 
+	int set_casm(graph_t *g, char *aid);
+int get_pid(graph_t *g, char *pname);
 #ifdef __cplusplus
 }
 #endif

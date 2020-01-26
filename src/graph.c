@@ -83,7 +83,9 @@ void graph_destroy(graph_t *g)
 		if (g->eg.edge_idx) free(g->eg.edge_idx);
 		//free paths
 		if (g->pt.paths) {
-			for (i = 0; i < g->pt.n; ++i) free(g->pt.paths[i].ns);
+			for (i = 0; i < g->pt.n; ++i) {
+				/*fprintf(stderr, "free %d: %s %p\n", i, g->pt.paths[i].name, g->pt.paths[i].ns); */
+				free(g->pt.paths[i].ns);}
 			free(g->pt.paths);
 		} 
 		//free asms
@@ -212,12 +214,22 @@ int out_graph(graph_t *g)
 	return 0;
 }
 
+uint32_t get_name2id_core(void *h, char *nm)
+{
+	shash_t *z = (shash_t *)h;
+	khint_t k = kh_get(str, z, nm);
+	return k == kh_end(z) ? -1 : kh_val(z, k);
+}
+
 uint32_t get_name2id(graph_t *g, char *nm)
 {
 	shash_t *h = (shash_t *)g->h;
 	khint_t k = kh_get(str, h, nm);
 	return k == kh_end(h) ? -1 : kh_val(h, k);
 }
+
+
+
 //make mistakes when break the order S->P->L 
 
 
@@ -399,6 +411,7 @@ int simp_graph(graph_t *g)
 		pt[as->pn[i]>>1].ns = malloc(sizeof(uint32_t) * m);
 		memcpy(pt[as->pn[i]>>1].ns, p, sizeof(uint32_t) * m);
 		pt[as->pn[i]>>1].n = m; 
+		/*fprintf(stderr, "PATH %s %p\n", pt[as->pn[i]>>1].name, pt[as->pn[i]>>1].ns); */
 		for ( j = 0; j < m; ++j) vt[p[j]>>2].pv = as->pn[i]>>1;	
 		free(p);
 	}
@@ -1042,6 +1055,8 @@ int get_path(graph_t *g, uint32_t min_l, char *fn)
 	return 0;
 }
 
+
+
 int set_c(graph_t *g, char *s)
 {
 	int i;
@@ -1087,6 +1102,23 @@ graph_t *load_sat(char *fn)
 		else if (buf.s[0] == 'C') set_c(g, buf.s);
 	}
 	return g;	
+}
+
+int get_pid(graph_t *g, char *pname)
+{
+	uint32_t kid = get_name2id_core(g->h, pname);	
+	return ~kid?kid >> 1: -1;
+}
+int set_casm(graph_t *g, char *aid)
+{
+	uint32_t kid = get_name2id_core(g->as.h, aid);	
+	if (~kid) {
+		g->as.casm = kid;
+		return 0;	
+	} else {
+		fprintf(stderr, "[E::%s] assembly set %s is not found", __func__, aid);
+		return 1;
+	} 
 }
 
 int dump_sat(graph_t *g, char *fn)
