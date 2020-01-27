@@ -118,9 +118,11 @@ int sat2dot(graph_t *g, char *scfn, char *out_fn)
 {
 	asm_t *as = &g->as.asms[g->as.casm];
 	vertex_t *vt = g->vtx.vertices;
+	uint32_t nvt = g->vtx.n;
 	edge_t *edg = g->eg.edges;
 	path_t *pt = g->pt.paths;
 	uint32_t n = as->n;
+
 	uint32_t i;	
 	//target  
 	FILE *fp = out_fn ? fopen(out_fn, "w") : stdout;
@@ -153,11 +155,12 @@ int sat2dot(graph_t *g, char *scfn, char *out_fn)
 		n_edges += g->eg.n_del;	
 		for ( i = 0; i < n_edges; ++i) {
 			uint32_t v = edg[i].v, w = edg[i].w;
-			if (v >> 2 > w >> 2) {
-				if ((v >>1  & 1) && (w >> 1 & 1)) {
-					fprintf(fp, "\tnode%d:f%d -- node%d:f%d [label=\"%.5f\"];\n", v>>2, v & 1 ? 0 : 1, w >> 2, w & 1 ? 0 : 1, edg[i].wt);	
-				}
+			/*if (v >> 2 > w >> 2) {*/
+			if (!(v >>1  & 1) && !(w >> 1 & 1)) {
+				uint32_t c = (v >> 2 << 1) | (v & 1);
+				fprintf(fp, "\tnode%d:f%d -- node%d:f%d [label=\"%.5f\", color=\"%f 1 1\", fontcolor=\"%f 1 1\"];\n", v>>2, v & 1 ? 0 : 1, w >> 2, w & 1 ? 0 : 1, edg[i].wt, (float) c / (nvt * 2), (float) c / (nvt * 2));	
 			}
+			/*}*/
 		}
 		fprintf(fp, "}");	
 	} else {
@@ -171,7 +174,7 @@ int sat2dot(graph_t *g, char *scfn, char *out_fn)
 			uint32_t j, len = 0, len_ctg, idx = 1;
 			//push scaffold name to scfs
 			/*fprintf(stderr, "PATH %s %p\n", pt[as->pn[i]>>1].name, pt[as->pn[i]>>1].ns); */
-			fprintf(fp, "\tsubgraph cluster_%d {\n", i); 
+			fprintf(fp, "\tsubgraph cluster_0 {\n"); 
 			for ( j = 0; j < m; ++j ) { // pid, length,   
 				len_ctg = vt[p[j]>>2].len;	
 				fprintf(fp, "\t\tnode%d [label=\"<f0>+|%s|<f1>-\"];\n", p[j]>>2, vt[p[j]>>2].name);	
@@ -185,8 +188,9 @@ int sat2dot(graph_t *g, char *scfn, char *out_fn)
 				uint32_t v = edg[i].v, w = edg[i].w;
 				/*if (v >> 2 > w >> 2) {*/
 					if (!(v >>1  & 1) && !(w >> 1 & 1)) {
+						uint32_t c = (v >> 2 << 1) | (v & 1);
 						if (vt[v>>2].pv == pid && vt[w>>2].pv == pid)
-						fprintf(fp, "\tnode%d:f%d -- node%d:f%d [label=\"%.5f\"];\n", v>>2, v & 1 ? 0 : 1, w >> 2, w & 1 ? 0 : 1, edg[i].wt);	
+						fprintf(fp, "\tnode%d:f%d -- node%d:f%d [label=\"%.5f\", color=\"%f 1 1\", fontcolor=\"%f 1 1\"];\n", v>>2, v & 1 ? 0 : 1, w >> 2, w & 1 ? 0 : 1, edg[i].wt, (float) c / (m * 2), (float) c / (m * 2));	
 					}
 				/*}*/
 			}

@@ -5,7 +5,7 @@ satool is a tool for managing SAT format.
 1. zlib
 
 ## Third parties
-1. [graphviz] (https://www.graphviz.org/download/)
+1. [graphviz](https://www.graphviz.org/download/)
 
 ## Installation
 
@@ -30,6 +30,10 @@ Given a scaffold name **scf** and **sat**, visualize it
 bin/satool vis -s $scf $sat > t.dot
 dot -Tpng -o t.png t.dot 
 ```
+![sample](./imgs/sample.png)
+
+
+
 
 
 

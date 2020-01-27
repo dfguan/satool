@@ -829,7 +829,7 @@ int add_e(graph_t *g, char *s)
 			else if (i == 1) d1 = q[0];
 		   	else if (i == 2) n2 = q;
 			else if (i == 3) d2 = q[0];
-			else if (i == 5) wt = strtof(q+3, NULL);	
+			else if (i == 5) wt = strtof(q+5, NULL);	
 			++i, q = p + 1;	
 			if (c == 0) break;	
 		}
