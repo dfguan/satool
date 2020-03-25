@@ -14,26 +14,25 @@ def find_breaks(opts):
     linfor = len(infor)
     i = 0
     while i < linfor:
-        print ('\t'.join(infor[i]))
         if infor[i][3] == "gap":
-            # if float(infor[i][5]) / float(infor[i-1][5]) <= min_rat and float(infor[i][5])/ float(infor[i+1][5]) <= min_rat:
-                # print ('\t'.join(infor[i-1]))
+            if float(infor[i][5]) / float(infor[i-1][5]) <= min_rat and float(infor[i][5])/ float(infor[i+1][5]) <= min_rat:
+                print ("{0}\t{1}".format(infor[i-1][3], infor[i+1][3]))
             # a = float(infor[i][5]) * float (infor[i+1][4])/(2 * float(infor[i+1][5]) * float(infor[i-1][4]))
             # b = float(infor[i][5]) * float (infor[i-1][4])/(2 * float(infor[i-1][5]) * float(infor[i+1][4]))
-            a = float(infor[i][5]) / float(infor[i-1][5]) 
-            b = float(infor[i][5])/float(infor[i+1][5])
-            e = float(infor[i][5]) / float(infor[i-1][4])/float(infor[i+1][4])
-            if e < 2e-9:
-                if a < 0.3 and b < 0.3:
-                    print ("B\t"+infor[i-1][3])
-                elif a < 0.9 or b < 0.9:
-                    print ("S\t"+ infor[i-1][3])
+            # a = float(infor[i][5]) / float(infor[i-1][5]) 
+            # b = float(infor[i][5])/float(infor[i+1][5])
+            # e = float(infor[i][5]) / float(infor[i-1][4])/float(infor[i+1][4])
+            # if e < 2e-9:
+                # if a < 0.3 and b < 0.3:
+                    # print ("B\t"+infor[i-1][3])
+                # elif a < 0.9 or b < 0.9:
+                    # print ("S\t"+ infor[i-1][3])
                 # print (infor[i-1][3])
-            if a > b:
-                t = a 
-                a = b
-                b = t
-            print (str(a*100) + '\t' + str(b*100) + '\t' + str(e) + '\t' + '\t'.join(infor[i]))
+            # if a > b:
+                # t = a 
+                # a = b
+                # b = t
+            # print (str(a*100) + '\t' + str(b*100) + '\t' + str(e) + '\t' + '\t'.join(infor[i]))
         i += 1
     
     if opts.fin is not None:
