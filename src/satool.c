@@ -392,8 +392,8 @@ help:
 	if (optind + 2 > argc) {
 		fprintf(stderr,"[E::%s] require a sat file and a sequence file!\n", __func__); goto help;
 	}
-	char *seq_fn = argv[optind];
-	sat_fn = argv[optind++];
+	char *seq_fn = argv[optind++];
+	sat_fn = argv[optind];
 	fprintf(stderr, "Program starts\n");	
 	sat2seq(seq_fn, ca, sat_fn, out_fn, min_l);
 	fprintf(stderr, "Program ends\n");	
